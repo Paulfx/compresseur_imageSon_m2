@@ -5,6 +5,8 @@
 #ifndef _HOME_EXCO_REDACTEX_COURS_TRANS_COMP_IMAGE_TP_DCT2_BIT_H
 #define _HOME_EXCO_REDACTEX_COURS_TRANS_COMP_IMAGE_TP_DCT2_BIT_H
 
+#include <stdio.h>
+
 /*
  * La valeur d'un bit.
  */

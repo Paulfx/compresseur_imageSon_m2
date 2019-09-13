@@ -45,7 +45,7 @@ struct bitstream
  *     - Ce fichier est la sortie standard s'il est ouvert en écriture.
  *
  * Un fichier est ouvert en lecture ou ecriture.
- * Pas les deux en même en temps.
+ * Pas les deux en même temps.
  *     - En lecture on ne fera que des "getbit" (définie plus loin)
  *     - En écriture on ne fera que des "putbit" (définie plus loin)
  *
@@ -56,30 +56,33 @@ struct bitstream
 
 struct bitstream *open_bitstream(const char *fichier, const char* mode)
 {
+	struct bitstream* bs;
+	ALLOUER(bs, 1);
 
+	bs->buffer = 0; //Clear buffer
+	bs->nb_bits_dans_buffer = 0;
 
+	bs->ecriture = mode[0] != 'r';
 
+	const char * specialFile = "-";
+	if (strcmp(fichier, specialFile) == 0) {
+		//Special file, standard input/output
+		if (bs->ecriture)
+			bs->fichier = stdout;
+		else
+			bs->fichier = stdin; 
+	}
+	else {
+		//On ouvre le fichier
+		FILE* f = fopen(fichier, mode);
 
+		if (f == NULL)
+			EXCEPTION_LANCE(Exception_fichier_ouverture);
 
+		bs->fichier = f;
+	} 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-return 0 ; /* pour enlever un warning du compilateur */
+	return bs;
 }
 
 /*
@@ -99,6 +102,8 @@ return 0 ; /* pour enlever un warning du compilateur */
 
 void flush_bitstream(struct bitstream *b)
 {
+
+
 
 
 
