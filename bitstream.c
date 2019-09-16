@@ -102,17 +102,19 @@ struct bitstream *open_bitstream(const char *fichier, const char* mode)
 
 void flush_bitstream(struct bitstream *b)
 {
+	if(!b->ecriture)
+		return; //En lecture, on n'écrit pas!
 
+	//En écriture
+	if (b->nb_bits_dans_buffer != 0) {
+		//Buffer non vide
 
-
-
-
-
-
-
-
-
-
+		if (fputc(b->buffer, b->fichier) == EOF)
+			EXCEPTION_LANCE(Exception_fichier_ecriture);
+		//On vide le buffer
+		b->buffer = 0;
+		b->nb_bits_dans_buffer = 0;
+	}
 }
 
 /*
@@ -126,14 +128,15 @@ void flush_bitstream(struct bitstream *b)
 
 void close_bitstream(struct bitstream *b)
 {
-
-
-
-
-
-
-
-
+	if (b->ecriture) {
+		//On flush si le fichier est en écriture
+		flush_bitstream(b);
+	}
+	//On ferme le fichier
+	if (fclose(b->fichier) != 0)
+		EXCEPTION_LANCE(Exception_fichier_fermeture);
+	//On free
+	free(b);
 }
 
 /*
@@ -156,10 +159,18 @@ void close_bitstream(struct bitstream *b)
 void put_bit(struct bitstream *b, Booleen bit)
 {
 
-
-
-
-
+	if (!b->ecriture)
+		EXCEPTION_LANCE(Exception_fichier_ecriture_dans_fichier_ouvert_en_lecture);
+	else {
+		//On écrit
+		//Si plein, on le vide
+		if (b->nb_bits_dans_buffer == NB_BITS)
+			flush_bitstream(b);
+		//On pose le bit dans le buffer, à la bonne position
+		Position_Bit pos = (NB_BITS - b->nb_bits_dans_buffer) - 1; //OK car b->nbBits < NB_BITS
+		b->buffer = pose_bit(b->buffer, pos, bit);
+		b->nb_bits_dans_buffer++;
+	}
 }
 
 
@@ -188,20 +199,22 @@ void put_bit(struct bitstream *b, Booleen bit)
 
 Booleen get_bit(struct bitstream *b)
 {
+	if (b->ecriture)
+		EXCEPTION_LANCE(Exception_fichier_lecture_dans_fichier_ouvert_en_ecriture);
+	//TODO check return?
 
-
-
-
-
-
-
-
-
-
-
-
-
-return 0 ; /* pour enlever un warning du compilateur */
+	if (b->nb_bits_dans_buffer == 0) {
+		//On lit dans le fichier
+		int c = fgetc(b->fichier);
+		if (c == EOF)
+			EXCEPTION_LANCE(Exception_fichier_lecture);
+		//On peut le cast en unsigned char
+		b->buffer = (unsigned char) c;
+		b->nb_bits_dans_buffer = NB_BITS;
+	}
+	//On lit dans le buffer
+	b->nb_bits_dans_buffer--; //Ne peut pas être négative
+	return prend_bit(b->buffer, b->nb_bits_dans_buffer);
 }
 
 /*

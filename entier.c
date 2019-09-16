@@ -42,7 +42,7 @@ static char *prefixes[] = { "00", "010", "011", "1000", "1001", "1010", "1011",
 void put_entier(struct bitstream *b, unsigned int f)
 {
 
-
+	//Nb bits utiles....
 
 
 

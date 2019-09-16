@@ -111,7 +111,7 @@ void put_bit_string_tst()
     if ( get_bit(s) != prend_bit(i/8, i%8) )
       {
 	eprintf("Tous caractère != '0' doit être considéré comme Vrai.\n") ;
-	eprintf("Es-ce le cas pour vous ?") ;
+	eprintf("Est-ce le cas pour vous ?") ;
 	return ;
       }
  EXCEPTION(
