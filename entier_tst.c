@@ -138,6 +138,7 @@ void put_entier_signe_tst()
 	    }
 	}
     }
+    
     if ( get_entier_signe(bs) != -32768 )
 	    {
 	      eprintf("Mauvaise valeur pour -32768\n") ;

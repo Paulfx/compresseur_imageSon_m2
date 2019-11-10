@@ -64,8 +64,8 @@ struct bitstream *open_bitstream(const char *fichier, const char* mode)
 
 	bs->ecriture = mode[0] != 'r';
 
-	const char * specialFile = "-";
-	if (strcmp(fichier, specialFile) == 0) {
+	//const char * specialFile = "-";
+	if (strcmp(fichier, "-") == 0) {
 		//Special file, standard input/output
 		if (bs->ecriture)
 			bs->fichier = stdout;
@@ -77,7 +77,10 @@ struct bitstream *open_bitstream(const char *fichier, const char* mode)
 		FILE* f = fopen(fichier, mode);
 
 		if (f == NULL)
+		{
+			free(bs);
 			EXCEPTION_LANCE(Exception_fichier_ouverture);
+		}
 
 		bs->fichier = f;
 	} 
@@ -135,7 +138,7 @@ void close_bitstream(struct bitstream *b)
 	//On ferme le fichier
 	if (fclose(b->fichier) != 0)
 		EXCEPTION_LANCE(Exception_fichier_fermeture);
-	//On free
+	//On free le bitstream
 	free(b);
 }
 
@@ -201,17 +204,17 @@ Booleen get_bit(struct bitstream *b)
 {
 	if (b->ecriture)
 		EXCEPTION_LANCE(Exception_fichier_lecture_dans_fichier_ouvert_en_ecriture);
-	//TODO check return?
 
 	if (b->nb_bits_dans_buffer == 0) {
 		//On lit dans le fichier
 		int c = fgetc(b->fichier);
 		if (c == EOF)
 			EXCEPTION_LANCE(Exception_fichier_lecture);
-		//On peut le cast en unsigned char
+		//On peut le cast en unsigned char car c >= 0
 		b->buffer = (unsigned char) c;
 		b->nb_bits_dans_buffer = NB_BITS;
 	}
+	//Le buffer n'est plus vide
 	//On lit dans le buffer
 	b->nb_bits_dans_buffer--; //Ne peut pas être négative
 	return prend_bit(b->buffer, b->nb_bits_dans_buffer);

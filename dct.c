@@ -17,15 +17,27 @@
  * avec [j][i] et non [i][j].
  */
 
+#define M_PI           3.14159265358979323846
+
 void coef_dct(Matrice *table)
 {
+	double n = table->width;
+	double sqrt_n = sqrt(n);
+	double moyenne = 1.f / sqrt_n;
 
+	//printf("Moyenne %f\n", moyenne);
 
+	int i;
+	int j;
+	for (i=0;i<table->width;++i)
+		table->t[0][i] = moyenne;
 
+	double sqrt_2_n = sqrt(2) / sqrt_n;
 
-
-
-
+	for(j=1;j<table->height;++j)
+		for(i=0;i<table->width;++i) {
+			table->t[j][i] = sqrt_2_n * cos(j * M_PI * (2 * i + 1) / (2*n)); 
+		}
 
 }
 
@@ -44,7 +56,7 @@ void dct(int   inverse,		/* ==0: DCT, !=0 DCT inverse */
 {
 
 
-
+	coef_dct(Matrice *table)
 
 
 

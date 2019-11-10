@@ -262,7 +262,6 @@ void get_entier_shannon_fano_tst()
 	put_entier_shannon_fano(bs, sf, (*t[k])(i)) ;
 	sf_table_ok(sf) ;
 	}
-
       close_bitstream(bs) ;
       close_shannon_fano(sf) ;
       
@@ -272,7 +271,7 @@ void get_entier_shannon_fano_tst()
       for(i = -1000; i < 1000; i++)
 	{
 	  j = get_entier_shannon_fano(bs, sf) ;
-	  sf_table_ok(sf) ;
+    sf_table_ok(sf) ;
 	  if ( j != (*t[k])(i) )
 	    {
 	      eprintf("Compresse/Décompresse %s\n", tt[k]) ;
@@ -280,7 +279,6 @@ void get_entier_shannon_fano_tst()
 	      return ;
 	    }
 	}
-
       close_bitstream(bs) ;
       close_shannon_fano(sf) ;
     }

@@ -78,17 +78,12 @@ unsigned long pose_bit(unsigned long c,	      /* Entier à modifier */
 		       Booleen      bit	      /* Nouvelle valeur du bit */
 		       )
 {
-
 	unsigned long mask = pow2(position); //bit 1 à position
 
 	//On met le bit de c à la position 'position' à 0
 	//En mettant 0 au mask
-	c = c & ~mask;
-
-	//Si le bit n'est pas faux, on met 1 en faisant un OU binaire
-	if (bit != 0)
-		c |= pow2(position);
-
-	return c;
-
+	if (bit == 0)
+		return c & ~mask;
+	else
+		return c | mask; //Si le bit n'est pas faux, on met 1 en faisant un OU binaire
 }

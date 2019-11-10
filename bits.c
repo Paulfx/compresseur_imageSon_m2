@@ -13,7 +13,6 @@ void put_bits(struct bitstream *b, unsigned int nb, unsigned long v)
 	Booleen bit;
 	while(nb) {
 		nb--;
-		//bit = (v >> nb) & 1;
 		bit = prend_bit(v, nb);
 		put_bit(b, bit);
 	}
@@ -34,8 +33,8 @@ unsigned int get_bits(struct bitstream *b, unsigned int nb)
 	Booleen bit;
 	while(nb) {
 		nb--;
-		bit = get_bit(b);
-		res += bit * pow2(nb);
+		bit = get_bit(b); // 0 (faux) ou 1 (vrai)
+		res = 2*res + bit ;
 	}
 	return res;
 }
@@ -48,14 +47,7 @@ unsigned int get_bits(struct bitstream *b, unsigned int nb)
  * Comme d'habitude le caractère '0' c'est Faux les autres sont vrai
  */
 
-void put_bit_string(struct bitstream *b, const char *bits)
+void put_bit_string(struct bitstream *b, const char *t)
 {
-	Booleen bit;
-	for(const char* t = bits; *t != '\0'; t++) {
-		// if (*t == '0') bit = Faux;
-		// else bit = Vrai;
-		bit = *t != '0';
-		put_bit(b, bit);
-	}
-
+	while( *t ) put_bit(b, *t++ != '0');
 }
