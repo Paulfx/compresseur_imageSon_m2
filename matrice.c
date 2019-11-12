@@ -10,7 +10,6 @@
 Matrice * allocation_matrice_float(int height, int width)
 {
 
-
   Matrice *m;
   ALLOUER(m,1);
   m->width = width;
@@ -20,12 +19,6 @@ Matrice * allocation_matrice_float(int height, int width)
     ALLOUER(m->t[i], width);
 
   return m;
-
-
-
-
-
-return 0 ; /* pour enlever un warning du compilateur */
 }
 
 /*
@@ -34,14 +27,10 @@ return 0 ; /* pour enlever un warning du compilateur */
 
 void liberation_matrice_float(Matrice *m)
 {
-
-
+  for (int i=0;i<m->height;++i)
+    free(m->t[i]);
   free(m->t);
   free(m);
-
-
-
-
 }
 
 

@@ -44,35 +44,24 @@
 void compresse(struct intstream *entier, struct intstream *entier_signe
 	       , int nbe, const float *dct)
 {
+	int count_zero = 0;
+	int val;
+	for (int i=0; i<nbe; ++i) {
+		//arrondir à l'entier le plus proche
+		val = rint(dct[i]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		if (val != 0) {
+			//Stocker le nombre de 0
+			put_entier_intstream(entier, count_zero);
+			count_zero = 0;
+			//Stocker l'entier
+			put_entier_intstream(entier_signe, val);
+		}
+		else
+			count_zero++;
+	}
+	if (count_zero)
+		put_entier_intstream(entier, count_zero);
 }
 
 /*
@@ -84,19 +73,16 @@ void decompresse(struct intstream *entier, struct intstream *entier_signe
 {
 
 
+	int diff_address = entier_signe - entier;
+	struct intstream *pivot = entier;
 
+	//TODO faire un tableau
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	int count_val = 0;
+	//On s'arrête lorsqu'on a lu nbe event
+	while(count_val != nbe) {
+		dct[count_val++] = get_entier_intstream(pivot);
+		pivot += diff_address;
+		diff_address = -diff_address;
+	}
 }

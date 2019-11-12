@@ -54,19 +54,19 @@ void dct(int   inverse,		/* ==0: DCT, !=0 DCT inverse */
 	 float *sortie		/* Le son après transformation */
 	 )
 {
+	static Matrice* dct; //TODO liberer, surement nul mais comment ne pas la recreer
+	//Calculer les coefficients de la dct
+	dct = allocation_matrice_float(nbe,nbe);
+	coef_dct(dct);
 
+	Matrice *dct_calc;
 
-	coef_dct(Matrice *table)
+	if (inverse) {
+		dct_calc = allocation_matrice_float(nbe,nbe);
+		transposition_matrice(dct,dct_calc);
+	}
+	else
+		dct_calc = dct;
 
-
-
-
-
-
-
-
-
-
-
-
+	produit_matrice_vecteur(dct_calc, entree, sortie);
 }
