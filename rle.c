@@ -58,8 +58,9 @@ void compresse(struct intstream *entier, struct intstream *entier_signe
 			put_entier_intstream(entier_signe, val);
 		}
 		else
-			count_zero++;
+			count_zero++; //On peut le faire systématiquement, est ce mieux au niveau du pipeline?
 	}
+	//S'il reste des 0 non écrits, on les écrits
 	if (count_zero)
 		put_entier_intstream(entier, count_zero);
 }
@@ -71,18 +72,23 @@ void compresse(struct intstream *entier, struct intstream *entier_signe
 void decompresse(struct intstream *entier, struct intstream *entier_signe
 		 , int nbe, float *dct)
 {
-
-
-	int diff_address = entier_signe - entier;
-	struct intstream *pivot = entier;
-
-	//TODO faire un tableau
-
+	
 	int count_val = 0;
-	//On s'arrête lorsqu'on a lu nbe event
+	int count_zero, i;
 	while(count_val != nbe) {
-		dct[count_val++] = get_entier_intstream(pivot);
-		pivot += diff_address;
-		diff_address = -diff_address;
+
+		//On lit le nombre de 0
+		count_zero = get_entier_intstream(entier);
+		//On met autant de 0 dans le tableau
+		for (i=0; i<count_zero; ++i)
+			dct[count_val++] = 0;
+
+		//On peut finir sur des 0
+		if (count_val == nbe)
+			break;
+
+		//On lit l'entier signé et on le stocke
+		dct[count_val++] = get_entier_intstream(entier_signe);
 	}
+
 }
